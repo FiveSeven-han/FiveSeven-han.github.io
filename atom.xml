@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-28T04:12:04.595Z</updated>
+  <updated>2021-03-28T05:56:28.221Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>弱口令漏洞</title>
+    <link href="http://example.com/2021/03/28/%E5%BC%B1%E5%8F%A3%E4%BB%A4%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://example.com/2021/03/28/%E5%BC%B1%E5%8F%A3%E4%BB%A4%E6%BC%8F%E6%B4%9E/</id>
+    <published>2021-03-28T05:40:09.819Z</published>
+    <updated>2021-03-28T05:56:28.221Z</updated>
+    
+    <content type="html"><![CDATA[<p>一般弱口令为系统默认密码或设置的简单密码，密码非常容易被攻击者猜到。</p>        <h2 id="弱口令一般出现的地方">          <a href="#弱口令一般出现的地方" class="heading-link"><i class="fas fa-link"></i></a><a href="#弱口令一般出现的地方" class="headerlink" title="弱口令一般出现的地方"></a>弱口令一般出现的地方</h2>      <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">WEB层面：后台管理员登录、普通用户登录；中间件层面：MYSQL弱口令、MSSQL弱口令、ORACLE弱口令、TOMCAT弱口令及PHPMYADMIN弱口令等；系统层面：ftp弱口令、3389弱口令、ssh弱口令、telnet弱口令及网关与路由登录弱口令等。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>任何一种类型的漏洞，都没有弱口令来的简单、奏效。弱口令一般对后台管理员登陆界面和远程3389/21/22/23/1433/3306/1521等服务端口进行攻击。</p>        <h3 id="后台及服务端口的寻找">          <a href="#后台及服务端口的寻找" class="heading-link"><i class="fas fa-link"></i></a><a href="#后台及服务端口的寻找" class="headerlink" title="后台及服务端口的寻找"></a>后台及服务端口的寻找</h3>      <p>后台：GoogleHack、GitHubHack、robots.txt及SVN或者GIT代码泄露等；<br>远程端口：使用相应远程端口协议的爆破工具；</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;一般弱口令为系统默认密码或设置的简单密码，密码非常容易被攻击者猜到。&lt;/p&gt;
+
+        &lt;h2 id=&quot;弱口令一般出现的地方&quot;&gt;
+          &lt;a href=&quot;#弱口令一般出现的地方&quot; class=&quot;heading-link&quot;&gt;&lt;i class=&quot;fas f</summary>
+      
+    
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+  </entry>
   
   <entry>
     <title>网络安全应急响应</title>
