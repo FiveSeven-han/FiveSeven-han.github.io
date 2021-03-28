@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-28T05:56:28.221Z</updated>
+  <updated>2021-03-28T06:38:01.330Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>服务器请求伪造漏洞</title>
+    <link href="http://example.com/2021/03/28/SSRF%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://example.com/2021/03/28/SSRF%E6%BC%8F%E6%B4%9E/</id>
+    <published>2021-03-28T06:18:03.435Z</published>
+    <updated>2021-03-28T06:38:01.330Z</updated>
+    
+    <content type="html"><![CDATA[<p>SSRF是由攻击者构造形成的，并由服务器发起请求的一类计算机安全漏洞。SSRF攻击的主要目标是从外网无法访问的内网系统，正是因为他是有服务器发起的，所以能够请求到与他先开你而与外网隔离的内网系统。</p>        <h2 id="SSRF原理">          <a href="#SSRF原理" class="heading-link"><i class="fas fa-link"></i></a><a href="#SSRF原理" class="headerlink" title="SSRF原理"></a>SSRF原理</h2>      <p>SSRF攻击是通过篡改获取资源的请求发送给内部服务器实现的，但是内部服务器并未判断这个请求是否合法就以他的身份来访问其他内部服务i起的资源。</p>        <h3 id="补充">          <a href="#补充" class="heading-link"><i class="fas fa-link"></i></a><a href="#补充" class="headerlink" title="补充"></a>补充</h3>      <p>XSS、CSRF、SSRF这三类安全漏洞的共同之处都是由服务器程序对用户提交的请求数据过滤不严或者过于信任导致的。不同之处在于，XSS的成因是服务器程序对用户提交的请求未进行安全过滤，从而导致浏览器在渲染服务器程序返回的HTML页面时，用户提交的恶意代码被执行；CSRF攻击的成因是服务器程序未对用户提交的数据进行随机值校验且对HTTP请求包内的REFER字段校验不严，导致攻击者可以利用用户本地的COOKIE伪造用户请求发送至服务器程序；SSRF攻击的成因是服务器程序对用户提交的URL过于信任二没有对用户提交的URL进行地址限制及安全过滤，导致攻击者可以此为跳板刺探内网信息或者渗透网络。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;SSRF是由攻击者构造形成的，并由服务器发起请求的一类计算机安全漏洞。SSRF攻击的主要目标是从外网无法访问的内网系统，正是因为他是有服务器发起的，所以能够请求到与他先开你而与外网隔离的内网系统。&lt;/p&gt;
+
+        &lt;h2 id=&quot;SSRF原理&quot;&gt;
+        </summary>
+      
+    
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+  </entry>
   
   <entry>
     <title>弱口令漏洞</title>
