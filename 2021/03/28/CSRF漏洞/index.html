@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="theme-color" content="#54bcff"><link rel="manifest" href="../../../../manifest.json?v=2.6.2"><link rel="icon" href="../../../../images/icons/favicon-16x16.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="../../../../images/icons/favicon-32x32.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="跨站请求伪造漏洞被称为安全漏洞中“沉睡中的巨人”，由此可见，该漏洞是一个巨大的安全隐患。它与SQL注入漏洞及跨站脚本漏洞并称为安全漏洞中的“三大天王”，而其他的安全漏洞基本上都可与这“三大天王”中的任何一个配合并产生一些复合的、高技巧的攻击手法。该漏洞对攻击者来讲，常有“柳暗花明”的突破，而对于安全防御者而言，却是一件十分头疼的事。                     Cookie和Sessi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨站请求伪造漏洞">
+<meta property="og:url" content="http://example.com/2021/03/28/CSRF%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="FiveSeven">
+<meta property="og:description" content="跨站请求伪造漏洞被称为安全漏洞中“沉睡中的巨人”，由此可见，该漏洞是一个巨大的安全隐患。它与SQL注入漏洞及跨站脚本漏洞并称为安全漏洞中的“三大天王”，而其他的安全漏洞基本上都可与这“三大天王”中的任何一个配合并产生一些复合的、高技巧的攻击手法。该漏洞对攻击者来讲，常有“柳暗花明”的突破，而对于安全防御者而言，却是一件十分头疼的事。                     Cookie和Sessi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-28T06:39:32.345Z">
+<meta property="article:modified_time" content="2021-03-28T06:54:10.545Z">
+<meta property="article:author" content="FiveSeven">
+<meta property="article:tag" content="漏洞原理">
+<meta name="twitter:card" content="summary"><title>跨站请求伪造漏洞 | FiveSeven</title><link ref="canonical" href="http://example.com/2021/03/28/CSRF%E6%BC%8F%E6%B4%9E/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="../../../../css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":4},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":true},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"carbon","highlight":"dark","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: {"avoidBanner":true},
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: {"switchPost":true},
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="atom.xml" title="FiveSeven" type="application/atom+xml">
+</head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">FiveSeven</div><div class="header-banner-info__subtitle">一个信息安全行业的成长者</div></div><div class="header-banner-arrow"><div class="header-banner-arrow__icon"><i class="fas fa-angle-down"></i></div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">跨站请求伪造漏洞</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-03-28</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2021-03-28</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body"><p>跨站请求伪造漏洞被称为安全漏洞中“沉睡中的巨人”，由此可见，该漏洞是一个巨大的安全隐患。它与SQL注入漏洞及跨站脚本漏洞并称为安全漏洞中的“三大天王”，而其他的安全漏洞基本上都可与这“三大天王”中的任何一个配合并产生一些复合的、高技巧的攻击手法。该漏洞对攻击者来讲，常有“柳暗花明”的突破，而对于安全防御者而言，却是一件十分头疼的事。</p>
+
+        <h3 id="Cookie和Session">
+          <a href="#Cookie和Session" class="heading-link"><i class="fas fa-link"></i></a><a href="#Cookie和Session" class="headerlink" title="Cookie和Session"></a>Cookie和Session</h3>
+      
+        <h2 id="Cookie">
+          <a href="#Cookie" class="heading-link"><i class="fas fa-link"></i></a><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h2>
+      <p>Cookie是一个保存在用户的本地计算机上的txt文件，用来保存用户登录的信息。例如只要你登录成功一次，Cookie就会保存你的登录凭证，下次再登录的时候就不需要输入登录凭证，浏览器直接携带该Cookie通过服务器的验证，进而操作登录权限以下的内容。当然，前提是你的本地浏览器启用了Cookie功能。Cookie的使用是不是很方便呢?答案当然是“是的”。可是，方便的同时也给用户带来了安全隐患。若攻击者盗取了用户本地计算机系统上的Cookie，那么，攻击者就可以冒充用户的身份，无须输入登录凭证即可直接使用用户的Cookie访问登录权限以下的内容。例如:若该Cookie是用户保存在本地计算机系统里的网银登录成功以后的Cookie，那么可能就会直接危及用户的资金安全。Cookie的功能如此强大，那么Cookie中存储的究竟是什么内容呢?答案是Session ID。</p>
+
+        <h2 id="Session">
+          <a href="#Session" class="heading-link"><i class="fas fa-link"></i></a><a href="#Session" class="headerlink" title="Session"></a>Session</h2>
+      <p>Session是保存在服务器的内存中、服务器的文本文件中或者是服务器的数据库(Redis及MongoDB等）中的一种与Cookie—一对应的凭证。每一个登录成功的用户都会产生一个Cookie及一个Session，它们—一对应。Cookie保存在用户的本地计算机系统里,Session却保存在服务器上。当用户的浏览器下次携带Cookie进行登录验证的时候，服务器就会寻找并判断Session中存储的信息与Cookie中存储的信息是否是“一对”，若是则通过验证，若不是则禁止访问登录权限以下的内容。Session的功能如此强大，那么Session中存储的究竟是什么内容呢?答案是用户的身份信息、登录状态信息及用户的操作权限等一系列与用户身份、权限相关的信息。这些信息都是通用的、频繁存取的并且与用户直接或者间接相关的。有比较才有鉴别，否则Cookie提交过来的身份信息该如何鉴别真伪?如何鉴别是不是本地计算机系统的浏览器在操纵呢?试想:若攻击者没有用户的Cookie，却能任意修改Session，是不是也可以达到入侵的目的呢?答案显然是可以。只需要修改Cookie与Session为“一对”即可，因为Cookie与Session本来就是——对应的。</p>
+
+        <h3 id="CSRF漏洞原理">
+          <a href="#CSRF漏洞原理" class="heading-link"><i class="fas fa-link"></i></a><a href="#CSRF漏洞原理" class="headerlink" title="CSRF漏洞原理"></a>CSRF漏洞原理</h3>
+      <p>跨站请求伪造漏洞的攻击就是利用Cookie与Session自身的弱点来达到入侵用户的目的的。举个例子:用户打开了网银贝,此时，时时刻刻都有Cookie与Session的——对应验证（因为HTTP请求是无状态的请求，所以时刻需要鉴别用户的身份真伪)，交易应该很安全。可是，若用户的浏览器开启了Cookie功能，这时候用户的本地计算机系统里就会产生用户登录凭证信息。此时若攻击者发一个恶意链接给用户，而该链接是针对网银页面转账操作的，攻击者意图将用户网银中的资金通过转账的方式转移到其他账户中，此时的你却并不知情，为什么呢?因为攻击者已将恶意链接伪装成了正常链接（例如领取红包等)，如果用户由于好奇心或者其他原因点击了领取红包的链接，那么，用户网银中的资金就会不知不觉被窃取了。这是如何实现的呢?因为用户启用了浏览器的Cookie功能。当用户点击了攻击者精心伪装的恶意链接后，浏览器就会自动寻找并携带用户本地与网银页面有关的Cookie信息去操作网银页面。服务器只能检测到该操作是来自本地计算机系统的浏览器，却并不能判定该操作是否为网银所有者本人自愿的操作。如此一来，攻击者就窃取了用户的网银资金，严重损害了用户的个人利益，从技术上来讲就达到了跨站请求伪造漏洞的攻击目的。</p>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://example.com">FiveSeven</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://example.com/2021/03/28/CSRF%E6%BC%8F%E6%B4%9E/">http://example.com/2021/03/28/CSRF%E6%BC%8F%E6%B4%9E/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/">漏洞原理</a></span></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="../SSRF%E6%BC%8F%E6%B4%9E/"><span class="paginator-prev__text">服务器请求伪造漏洞</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie%E5%92%8CSession"><span class="toc-number">1.</span> <span class="toc-text">
+          Cookie和Session</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cookie"><span class="toc-number"></span> <span class="toc-text">
+          Cookie</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Session"><span class="toc-number"></span> <span class="toc-text">
+          Session</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">
+          CSRF漏洞原理</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/2.jpg" alt="avatar"></div><p class="sidebar-ov-author__text">I can fly</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/fruitmememem/" target="_blank" rel="noopener" data-popover="Github" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span></a><a class="sidebar-ov-social-item" href="974256658" target="_blank" rel="noopener" data-popover="QQ" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-qq"></i></span></a></div><div class="sidebar-ov-feed"></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">10</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">3</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">3</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="../../../../images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2021</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>FiveSeven</span></div><div><span>由 <a href="../../../../http:/hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.0</span><span class="footer__devider">|</span><span>主题 - <a href="../../../../https:/github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div><div>托管于 <a href="https://github.com/FiveSeven-han/FiveSeven-han.github.io/tree/hexo" rel="noopener" target="_blank">FiveSeven-han</a></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/pjax@latest/pjax.min.js"></script><script>window.addEventListener('DOMContentLoaded', function () {
+  var pjax = new Pjax({"selectors":["head title","#main",".pjax-reload"],"history":true,"scrollTo":false,"scrollRestoration":false,"cacheBust":false,"debug":false,"currentUrlFullReload":false,"timeout":0});
+  // 加载进度条的计时器
+  var loadingTimer = null;
+
+  // 重置页面 Y 方向上的滚动偏移量
+  document.addEventListener('pjax:send', function () {
+    $('.header-nav-menu').removeClass('show');
+    if (CONFIG.pjax && CONFIG.pjax.avoidBanner) {
+      $('html').velocity('scroll', {
+        duration: 500,
+        offset: $('#header').height(),
+        easing: 'easeInOutCubic'
+      });
+    }
+
+    var loadingBarWidth = 20;
+    var MAX_LOADING_WIDTH = 95;
+
+    $('.loading-bar').addClass('loading');
+    $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    clearInterval(loadingTimer);
+    loadingTimer = setInterval(function () {
+      loadingBarWidth += 3;
+      if (loadingBarWidth > MAX_LOADING_WIDTH) {
+        loadingBarWidth = MAX_LOADING_WIDTH;
+      }
+      $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    }, 500);
+  }, false);
+
+  window.addEventListener('pjax:complete', function () {
+    clearInterval(loadingTimer);
+    $('.loading-bar__progress').css('width', '100%');
+    $('.loading-bar').removeClass('loading');
+    setTimeout(function () {
+      $('.loading-bar__progress').css('width', '0');
+    }, 400);
+    $('link[rel=prefetch], script[data-pjax-rm]').each(function () {
+      $(this).remove();
+    });
+    $('script[data-pjax], #pjax-reload script').each(function () {
+      $(this).parent().append($(this).remove());
+    });
+
+    if (Stun.utils.pjaxReloadBoot) {
+      Stun.utils.pjaxReloadBoot();
+    }
+    if (Stun.utils.pjaxReloadScroll) {
+      Stun.utils.pjaxReloadScroll();
+    }
+    if (Stun.utils.pjaxReloadSidebar) {
+      Stun.utils.pjaxReloadSidebar();
+    }
+    if (false) {
+      if (Stun.utils.pjaxReloadHeader) {
+        Stun.utils.pjaxReloadHeader();
+      }
+      if (Stun.utils.pjaxReloadScrollIcon) {
+        Stun.utils.pjaxReloadScrollIcon();
+      }
+      if (Stun.utils.pjaxReloadLocalSearch) {
+        Stun.utils.pjaxReloadLocalSearch();
+      }
+    }
+  }, false);
+}, false);</script><div id="pjax-reload"><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script></div><script src="../../../../js/utils.js?v=2.6.2"></script><script src="../../../../js/stun-boot.js?v=2.6.2"></script><script src="../../../../js/scroll.js?v=2.6.2"></script><script src="../../../../js/header.js?v=2.6.2"></script><script src="../../../../js/sidebar.js?v=2.6.2"></script></body></html>
