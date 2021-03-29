@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-29T06:45:43.717Z</updated>
+  <updated>2021-03-28T06:59:31.392Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,33 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Xxx</title>
-    <link href="http://example.com/2021/03/29/xxx/"/>
-    <id>http://example.com/2021/03/29/xxx/</id>
-    <published>2021-03-29T06:15:16.399Z</published>
-    <updated>2021-03-29T06:45:43.717Z</updated>
-    
-    <content type="html"><![CDATA[<p>命令执行漏洞的效果类似包含攻击，主要是由于输入的参数被当成命令来执行。命令执行漏洞分为远程执行漏洞和本地命令执行漏洞，远程执行命令漏洞的危害范围远大于本地执行命令。</p>        <h2 id="命令执行漏洞的产生">          <a href="#命令执行漏洞的产生" class="heading-link"><i class="fas fa-link"></i></a><a href="#命令执行漏洞的产生" class="headerlink" title="命令执行漏洞的产生"></a>命令执行漏洞的产生</h2>      <hr><p>如果目标站点在设计时其过滤功能不严格或数据与代码区分不明显，就有很大的可能导致命令执行漏洞的存在。</p><p>###举例</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>? php @eval<span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'h'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> ?<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>在上面的PHP小马中，就以eval的方式将POST过来的参数数据以PHP的方式加以执行。其中，h参数由外部传入，也就是成为攻击者的可控参数，从而形成远程命令执行的漏洞。</p>        <h3 id="利用系统函数实现远程命令执行">          <a href="#利用系统函数实现远程命令执行" class="heading-link"><i class="fas fa-link"></i></a><a href="#利用系统函数实现远程命令执行" class="headerlink" title="利用系统函数实现远程命令执行"></a>利用系统函数实现远程命令执行</h3>      <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">eval<span class="token punctuation">(</span><span class="token punctuation">)</span>、assert<span class="token punctuation">(</span><span class="token punctuation">)</span>、preg_replace<span class="token punctuation">(</span><span class="token punctuation">)</span>、call_user_func<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>在PHP下,允许远程命令执行的函数有eval()、assert()preg_ replace()call user func()。如果页面中存在上述函数且其参数可被用户控制，同时没有对参数做有效的过滤，那么就可能存在远程命令执行漏洞。</p>        <h3 id="eval-与assert-函数的区别">          <a href="#eval-与assert-函数的区别" class="heading-link"><i class="fas fa-link"></i></a><a href="#eval-与assert-函数的区别" class="headerlink" title="eval()与assert()函数的区别"></a>eval()与assert()函数的区别</h3>      <hr><p>eval()与assert()函数在执行效果上基本相同，都可以动态执行代码，且接收的参数为字符串。assert()函数虽然也会执行参数内的代码，但主要用来判断一个表达式是否成立，并返回true或false。实战中，eval()函数通常 会被系统禁用，因此在一句话木马中通常利用assert(来实现代码执行。但需要注意的是:eval参数必须是合法的PHP代码，必须以分号结尾，否则会报错。比如:</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">eval<span class="token punctuation">(</span><span class="token string">" phpinfo() "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    //不可执行assert<span class="token punctuation">(</span><span class="token string">" phpinfo0 "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  //可执行<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>eval()函数正确执行的方式应该是eval(“phpinfo(); “)，即应符合PHP的代码规范，须在phpinfo()后面添加”;”否则将报错</p><p><img src="/.com//bokedajain\blog\FiveSeven-han\source_posts\xxx\1.png" alt="1"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;命令执行漏洞的效果类似包含攻击，主要是由于输入的参数被当成命令来执行。命令执行漏洞分为远程执行漏洞和本地命令执行漏洞，远程执行命令漏洞的危害范围远大于本地执行命令。&lt;/p&gt;
-
-        &lt;h2 id=&quot;命令执行漏洞的产生&quot;&gt;
-          &lt;a href=&quot;#命</summary>
-      
-    
-    
-    
-    <category term="漏洞原理" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
-    
-    
-    <category term="漏洞原理" scheme="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
-    
-  </entry>
   
   <entry>
     <title>跨站请求伪造漏洞</title>
