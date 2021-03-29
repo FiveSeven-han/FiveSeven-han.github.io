@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-28T06:59:31.392Z</updated>
+  <updated>2021-03-29T08:42:49.638Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>订单ID篡改漏洞（逻辑漏洞）</title>
+    <link href="http://example.com/2021/03/29/%E8%AE%A2%E5%8D%95ID%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://example.com/2021/03/29/%E8%AE%A2%E5%8D%95ID%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/</id>
+    <published>2021-03-29T08:20:49.777Z</published>
+    <updated>2021-03-29T08:42:49.638Z</updated>
+    
+    <content type="html"><![CDATA[<p>在有电子交易业务的网站中，用户登陆后可以下订单购买相应产品，购买成功后，用户可以查看订单详情。当开发人员没有考虑登陆后用户之间权限隔离的问题时，就会导致平行权限绕过漏洞。攻击者只需注册一个普通账户，就可以通过篡改、遍历订单ID，获得其他用户订单详情，其中多数包括用户的姓名、身份证、地址、电话号码等敏感信息。黑色产业链的攻击者通常会利用此漏洞得到这些隐私信息。</p>        <h2 id="过程">          <a href="#过程" class="heading-link"><i class="fas fa-link"></i></a><a href="#过程" class="headerlink" title="过程"></a>过程</h2>      <p>注册一个普通账户，然后篡改、遍历订单ID，获得其他用户订单详情。</p>        <h3 id="步骤">          <a href="#步骤" class="heading-link"><i class="fas fa-link"></i></a><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3>      <p>假设某保险公司网站存在平行权限绕过漏洞。登陆网站后，访问URL，修改响应参数的值，可以遍历获得他人保单内容，其中包含很多敏感隐私信息。</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">http://xxxxx.com/SL_LES/policyDetailInfo.do?policyNo<span class="token operator">=</span>P000000018446847<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>步骤一、登录一个账号（如果没有注册一个），查看本人保单。</p><p>步骤二、抓包修改保单号，即可越权查看他人保单内容。</p><p>在返回的数据包中，包含全部界面中被隐藏的身份证号码等敏感信息。</p>        <h3 id="修复建议">          <a href="#修复建议" class="heading-link"><i class="fas fa-link"></i></a><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h3>      <p>后台查看订单时要通过Session机制判断用户身份，做好平行权限控制，服务端需要</p><p>校验相应订单是否和登录者的身份一致，如发现不一致则拒绝请求，防止平行权限绕过漏洞泄露用户敏感个人隐私信息。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在有电子交易业务的网站中，用户登陆后可以下订单购买相应产品，购买成功后，用户可以查看订单详情。当开发人员没有考虑登陆后用户之间权限隔离的问题时，就会导致平行权限绕过漏洞。攻击者只需注册一个普通账户，就可以通过篡改、遍历订单ID，获得其他用户订单详情，其中多数包括用户的姓名、</summary>
+      
+    
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+  </entry>
   
   <entry>
     <title>跨站请求伪造漏洞</title>
