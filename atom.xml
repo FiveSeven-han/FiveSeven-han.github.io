@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-29T08:42:49.638Z</updated>
+  <updated>2021-03-29T08:57:20.799Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,13 +17,37 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>商品编号篡改漏洞（逻辑漏洞）</title>
+    <link href="http://example.com/2021/03/29/%E5%95%86%E5%93%81%E7%BC%96%E5%8F%B7%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://example.com/2021/03/29/%E5%95%86%E5%93%81%E7%BC%96%E5%8F%B7%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/</id>
+    <published>2021-03-29T08:51:52.740Z</published>
+    <updated>2021-03-29T08:57:20.799Z</updated>
+    
+    <content type="html"><![CDATA[<p>在交易支付类型的业务中，最常见的业务漏洞就是修改商品金额。例如在生成商品订单、跳转支付页面时，修改 HTTP 请求中的金额参数，可以实现 1 分买充值卡、1元买特斯拉等操作。此类攻击很难从流量中匹配识别出来，通常只有在事后财务结算时发现大额账务问题，才会被发现。此时，攻击者可能已经通过该漏洞获得了大量利益。如果金额较小或财务审核不严，攻击者则可能细水长流，从中获得持续的利益。事后发现此类漏洞， 就大大增加了追责的难度和成本。</p><p>此类业务漏洞的利用方法，攻击者除了直接篡改商品金额，还可以篡改商品编号，同样会造成实际支付金额与商品不对应，但又交易成功的情况。攻击者可以利用此业务漏洞以低价购买高价的物品。</p>        <h2 id="过程">          <a href="#过程" class="heading-link"><i class="fas fa-link"></i></a><a href="#过程" class="headerlink" title="过程"></a>过程</h2>      <p>攻击者提交订单时，抓包篡改商品编号，导致商品与价格不对应但却交易成功，从而从中获利。</p>        <h3 id="步骤">          <a href="#步骤" class="heading-link"><i class="fas fa-link"></i></a><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3>      <p>步骤一：登录某积分商城http：//xxxxx.com.cn/club/index.php？m=goods&amp;c=lists。</p><p>步骤二：列出积分换商品，先挑选出我想要的礼物，如商品编号为goods_id=1419f75d406811e3ae7601beb44c5ff7.</p><p>步骤三：选择商城中积分最低的礼物兑换（5 积分的杯子），并填好相关信息，抓包修改goods_id。</p><p>步骤四：替换goods_id=1419f75d406811e3ae7601beb44c5ff7（30积分），替换成功。</p><p>步骤五：订单页面显示用5积分换购需要30积分的鼠标成功。</p>        <h3 id="修复建议">          <a href="#修复建议" class="heading-link"><i class="fas fa-link"></i></a><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h3>      <p>建议商品金额不要在客户端传入，防止被篡改。如果确实需要在客户端传输金额，则服务端在收到请求后必须检查商品价格和交易金额是否一致，或对支付金额做签名校验， 若不一致则阻止该交易。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在交易支付类型的业务中，最常见的业务漏洞就是修改商品金额。例如在生成商品订单、跳转支付页面时，修改 HTTP 请求中的金额参数，可以实现 1 分买充值卡、1元买特斯拉等操作。此类攻击很难从流量中匹配识别出来，通常只有在事后财务结算时发现大额账务问题，才会被发现。此时，攻击者</summary>
+      
+    
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+    
+    <category term="漏洞原理" scheme="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/"/>
+    
+  </entry>
+  
+  <entry>
     <title>订单ID篡改漏洞（逻辑漏洞）</title>
     <link href="http://example.com/2021/03/29/%E8%AE%A2%E5%8D%95ID%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/"/>
     <id>http://example.com/2021/03/29/%E8%AE%A2%E5%8D%95ID%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/</id>
     <published>2021-03-29T08:20:49.777Z</published>
-    <updated>2021-03-29T08:42:49.638Z</updated>
+    <updated>2021-03-29T08:49:17.851Z</updated>
     
-    <content type="html"><![CDATA[<p>在有电子交易业务的网站中，用户登陆后可以下订单购买相应产品，购买成功后，用户可以查看订单详情。当开发人员没有考虑登陆后用户之间权限隔离的问题时，就会导致平行权限绕过漏洞。攻击者只需注册一个普通账户，就可以通过篡改、遍历订单ID，获得其他用户订单详情，其中多数包括用户的姓名、身份证、地址、电话号码等敏感信息。黑色产业链的攻击者通常会利用此漏洞得到这些隐私信息。</p>        <h2 id="过程">          <a href="#过程" class="heading-link"><i class="fas fa-link"></i></a><a href="#过程" class="headerlink" title="过程"></a>过程</h2>      <p>注册一个普通账户，然后篡改、遍历订单ID，获得其他用户订单详情。</p>        <h3 id="步骤">          <a href="#步骤" class="heading-link"><i class="fas fa-link"></i></a><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3>      <p>假设某保险公司网站存在平行权限绕过漏洞。登陆网站后，访问URL，修改响应参数的值，可以遍历获得他人保单内容，其中包含很多敏感隐私信息。</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">http://xxxxx.com/SL_LES/policyDetailInfo.do?policyNo<span class="token operator">=</span>P000000018446847<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>步骤一、登录一个账号（如果没有注册一个），查看本人保单。</p><p>步骤二、抓包修改保单号，即可越权查看他人保单内容。</p><p>在返回的数据包中，包含全部界面中被隐藏的身份证号码等敏感信息。</p>        <h3 id="修复建议">          <a href="#修复建议" class="heading-link"><i class="fas fa-link"></i></a><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h3>      <p>后台查看订单时要通过Session机制判断用户身份，做好平行权限控制，服务端需要</p><p>校验相应订单是否和登录者的身份一致，如发现不一致则拒绝请求，防止平行权限绕过漏洞泄露用户敏感个人隐私信息。</p>]]></content>
+    <content type="html"><![CDATA[<p>在有电子交易业务的网站中，用户登陆后可以下订单购买相应产品，购买成功后，用户可以查看订单详情。当开发人员没有考虑登陆后用户之间权限隔离的问题时，就会导致平行权限绕过漏洞。攻击者只需注册一个普通账户，就可以通过篡改、遍历订单ID，获得其他用户订单详情，其中多数包括用户的姓名、身份证、地址、电话号码等敏感信息。黑色产业链的攻击者通常会利用此漏洞得到这些隐私信息。</p>        <h2 id="过程">          <a href="#过程" class="heading-link"><i class="fas fa-link"></i></a><a href="#过程" class="headerlink" title="过程"></a>过程</h2>      <p>注册一个普通账户，然后篡改、遍历订单ID，获得其他用户订单详情。</p>        <h3 id="步骤">          <a href="#步骤" class="heading-link"><i class="fas fa-link"></i></a><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3>      <p>假设某保险公司网站存在平行权限绕过漏洞。登陆网站后，访问URL，修改响应参数的值，可以遍历获得他人保单内容，其中包含很多敏感隐私信息。<span class="exturl"><a class="exturl__link" href="http://xxxxx.com/SL_LES/policyDetailInfo.do?policyNo=P000000018446847">http://xxxxx.com/SL_LES/policyDetailInfo.do?policyNo=P000000018446847</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p><p>步骤一、登录一个账号（如果没有注册一个），查看本人保单。</p><p>步骤二、抓包修改保单号，即可越权查看他人保单内容。</p><p>在返回的数据包中，包含全部界面中被隐藏的身份证号码等敏感信息。</p>        <h3 id="修复建议">          <a href="#修复建议" class="heading-link"><i class="fas fa-link"></i></a><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h3>      <p>后台查看订单时要通过Session机制判断用户身份，做好平行权限控制，服务端需要</p><p>校验相应订单是否和登录者的身份一致，如发现不一致则拒绝请求，防止平行权限绕过漏洞泄露用户敏感个人隐私信息。</p>]]></content>
     
     
       
