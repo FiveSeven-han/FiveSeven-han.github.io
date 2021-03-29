@@ -56,6 +56,7 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"><lin
 assert<span class="token punctuation">(</span><span class="token string">" phpinfo0 "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  //可执行<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>eval()函数正确执行的方式应该是eval(“phpinfo(); “)，即应符合PHP的代码规范，须在phpinfo()后面添加”;”否则将报错</p>
+<p><img src="/.com//bokedajain\blog\FiveSeven-han\source_posts\xxx\1.png" alt="1"></p>
 </div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="2021/03/28/CSRF%E6%BC%8F%E6%B4%9E/">跨站请求伪造漏洞</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-03-28</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2021-03-28</span></span></div></header><div class="post-body"><div class="post-excerpt"><p>跨站请求伪造漏洞被称为安全漏洞中“沉睡中的巨人”，由此可见，该漏洞是一个巨大的安全隐患。它与SQL注入漏洞及跨站脚本漏洞并称为安全漏洞中的“三大天王”，而其他的安全漏洞基本上都可与这“三大天王”中的任何一个配合并产生一些复合的、高技巧的攻击手法。该漏洞对攻击者来讲，常有“柳暗花明”的突破，而对于安全防御者而言，却是一件十分头疼的事。</p>
 
         <h2 id="Cookie和Session">
