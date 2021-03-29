@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="theme-color" content="#54bcff"><link rel="manifest" href="../../../../manifest.json?v=2.6.2"><link rel="icon" href="../../../../images/icons/favicon-16x16.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="../../../../images/icons/favicon-32x32.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="SQL注入是指攻击者通过把恶意SQL命令插入到Web表单的输入域或页面请求的查询字符串中，并且插入的恶意SQL命令会导致原有SQL语句作用发生改变，从而达到欺骗服务器执行恶意的SQL命令的一种攻击方式。                     SQL注入的分类       1、回显注入。用户发起查询请求，服务器将查询结果返回到页面中进行显示。 2、盲注。无回显。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sql注入漏洞">
+<meta property="og:url" content="http://example.com/2021/03/29/sql%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="FiveSeven">
+<meta property="og:description" content="SQL注入是指攻击者通过把恶意SQL命令插入到Web表单的输入域或页面请求的查询字符串中，并且插入的恶意SQL命令会导致原有SQL语句作用发生改变，从而达到欺骗服务器执行恶意的SQL命令的一种攻击方式。                     SQL注入的分类       1、回显注入。用户发起查询请求，服务器将查询结果返回到页面中进行显示。 2、盲注。无回显。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-29T13:20:19.750Z">
+<meta property="article:modified_time" content="2021-03-29T14:26:09.217Z">
+<meta property="article:author" content="FiveSeven">
+<meta property="article:tag" content="漏洞原理">
+<meta name="twitter:card" content="summary"><title>Sql注入漏洞 | FiveSeven</title><link ref="canonical" href="http://example.com/2021/03/29/sql%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="../../../../css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":4},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":true},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"carbon","highlight":"dark","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: {"avoidBanner":true},
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: {"switchPost":true},
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="atom.xml" title="FiveSeven" type="application/atom+xml">
+</head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">FiveSeven</div><div class="header-banner-info__subtitle">一个信息安全行业的成长者</div></div><div class="header-banner-arrow"><div class="header-banner-arrow__icon"><i class="fas fa-angle-down"></i></div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">Sql注入漏洞</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-03-29</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2021-03-29</span></span><span class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body"><p>SQL注入是指攻击者通过把恶意SQL命令插入到Web表单的输入域或页面请求的查询字符串中，并且插入的恶意SQL命令会导致原有SQL语句作用发生改变，从而达到欺骗服务器执行恶意的SQL命令的一种攻击方式。</p>
+
+        <h2 id="SQL注入的分类">
+          <a href="#SQL注入的分类" class="heading-link"><i class="fas fa-link"></i></a><a href="#SQL注入的分类" class="headerlink" title="SQL注入的分类"></a>SQL注入的分类</h2>
+      <p>1、回显注入。用户发起查询请求，服务器将查询结果返回到页面中进行显示。</p>
+<p>2、盲注。无回显。</p>
+
+        <h3 id="寻找注入点页面显示">
+          <a href="#寻找注入点页面显示" class="heading-link"><i class="fas fa-link"></i></a><a href="#寻找注入点页面显示" class="headerlink" title="寻找注入点页面显示"></a>寻找注入点页面显示</h3>
+      <p>●页面没有变化:访问三个链接，显示的页面没有任何不同。这种情况说明后台针对此查询点的过滤比较严格，是否存在SQL注入漏洞还需进行后续测试。<br>●页面中少了部分内容:如访问前两个链接正常，第三个页面里有明显的内容缺失，则基本可以确定有漏洞存在。接下来就需要检测是否有union显示位，如果没有，也可尝试进行bool注入。<br>●错误回显:如果访问第三个链接后出现数据库报错信息，那么可以判定当前查询点存在注入，用标准的回显注入法即可实现SQL注入攻击。<br>●跳转到默认界面:如果第一个链接显示正常，第二、第三个链接直接跳转到首页或其他默认页面，那么这可能是后台有验证逻辑，或者是有在线防护系统或防护软件提供实时保护。之后可尝试绕过防护工具的思路(大小写混用、编码等)。●直接关闭连接:如果在访问上述第二、三个链接时出现访问失败，那么这种情况下可尝试利用Burpsuite抓取服务器响应包，观察包头server字段内容。根据经验，这种情况通常为防护类工具直接开启在线阻断导致，后续可利用编码、换行等</p>
+
+        <h3 id="盲注流程">
+          <a href="#盲注流程" class="heading-link"><i class="fas fa-link"></i></a><a href="#盲注流程" class="headerlink" title="盲注流程"></a>盲注流程</h3>
+      <p>盲注的难点在于前台没有回显位，导致无发直接获取到有效信息。只能对注入语句执行的正确与否进行判断。在实施盲注时，关键在于合理的实现目标数据的猜测，并利用时间延迟等手段实现猜测正确与否的证明。</p>
+<p>盲注的语句在回显注入语句的基础上额外加入判断语句，是的返回结果只有对和错。</p>
+<p>判断数据库密码：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">and ascii<span class="token punctuation">(</span>substring<span class="token variable"><span class="token punctuation">((</span>select password from users where id<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">))</span></span><span class="token operator">=</span><span class="token number">49</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>利用时间延迟判断正确与否：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">union <span class="token keyword">select</span> if<span class="token punctuation">(</span>substring<span class="token punctuation">(</span>password,1,1<span class="token punctuation">)</span><span class="token operator">=</span><span class="token string">'a'</span>,benchmark<span class="token punctuation">(</span><span class="token number">100000</span>,sha1<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">))</span>,0<span class="token punctuation">)</span>
+union <span class="token keyword">select</span> if<span class="token punctuation">(</span>substring<span class="token punctuation">(</span>password,1,1<span class="token punctuation">)</span><span class="token operator">=</span><span class="token string">'a'</span>,sleep<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>,0<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>其中时间延迟利用了BENCHMARK函数，其意义是如果判断正确，则将1进行SHA1运算100000次，这样就产生了时间方面的滞后(由于100000次运算导致)。利用BENCHMARK函数时，如果目标服务器的数据库性能不强，极可能导致目标服务器宕机。因此推荐使用sleep函数，其用法为sleep(N),N为延迟秒数。当语句执行成功时，系统会根据sleep的时限进行延时输出。因此利用出现的延时情况来判断SQL注入语句是否成功执行。</p>
+
+        <h3 id="常见防护手段">
+          <a href="#常见防护手段" class="heading-link"><i class="fas fa-link"></i></a><a href="#常见防护手段" class="headerlink" title="常见防护手段"></a>常见防护手段</h3>
+      <p>SQL注入的防护方法包括参数过滤和预编译处理。参数过滤分为数据类型限制和危险字符处理。通俗地说就是:要么严防死守，细致检查;要么严格限定参数的有效范围(参数化查询)。总之就是要尽可能限制用户可提交参数的类型。</p>
+
+        <h3 id="参数类型检测绕过">
+          <a href="#参数类型检测绕过" class="heading-link"><i class="fas fa-link"></i></a><a href="#参数类型检测绕过" class="headerlink" title="参数类型检测绕过"></a>参数类型检测绕过</h3>
+      <p>222.194.15.74/newsPage.aspx?type_id=3&amp;new_id=690</p>
+<p>可以看到,type_id或new_id均为数字类型。后台在接收到用户端提交的参数后，在数据库中查询相应的页面对应信息并显示。这种业务场景非常常见，也极易出现SQL注入情况。当然，还有很多Web页面利用POST方式提交用户参数，因此推荐利用抓包工具来分析。</p>
+<p>(1）黑名单<br>黑名单过滤一般试图阻止SQL关键字、特定的单个字符或空白符，那么绕过黑名单防护措施的核心思路就是:将关键字或特定符号进行不同形式的变换，从而实现绕过过滤器的目的。针对黑名单，目前存在的绕过方式有以下几种。</p>
+<p>使用大小写变种<br>通过改变攻击字符中的大小写尝试避开过滤，因为数据库中使用不区分大小写的方式处理SQL关键字，如’uNioN SeLect passwod FroM TabluSers WHERE username=’admin’—，在平台上可通过将or变形为oR(变成大写字母)来试验能否绕过。</p>
+<p>使用SQL注释<br>使用注释符代替空格，如’UNIONSELECTpasswordFROM tablusersWHEREusernamelike’admin’，这样可避免后台对关键字符的过滤。最终执行SQL语句时，数据库会自动忽视注释符，导致实际执行语句为: UNION SELECT password FROM tablusers WHERE username like ‘admin’ 其中，like也可用于替代=，用以绕过针对=的过滤。</p>
+<p>1)嵌套。<br>在过滤器阻止的字符前面增加一个采用URL编码的空字节(%00)。嵌套过滤后的表达式如selecselectt。过滤之后的部分就可重新结合成select。</p>
+<p>2)用+号实现危险字符的拆分。<br>在数据库中，+号的作用为链接字符串，例如，or可利用+号拆分为’o’+’r’，这样可有效绕过前台的关键字检查，但在数据库执行时会自动变更为or。</p>
+<p>3）利用系统注释符截断。<br>比如，在执行以下SQL语句时:select * from users where username= ‘admin’– and password = ‘xxx’ 用“–”对后面语句截断，进而导致SQL语句的语义发生变化,and后面的内容不会执行。</p>
+<p>4）替换可能的危险字符。<br>例如，用“like”替换“=”或用“in”替换“=”，均可实现相同的效果。黑名单绕过的方法千变万化，这都是由于黑名单的过滤不够严格、数据库系统本身的特性导致的。因此，如果采用黑名单过滤，建议务必限制禁止执行的函数，仅仅禁用单引号、尖括号、等号、union、select并不会获得太好的效果。</p>
+<p>(2)GPC过滤<br>GPC过滤是PHP在5.4版本之前存在的一种防护机制，其特点是在特殊字符前面添加斜线“”，如单引号’会形成“&quot;”的效果，导致原有的功能失效。因此，针对GPC过滤的情况，要对GPC添加的“\”进行转义。这种情况下可尝试宽字节注入方式。<br>宽字节带来的安全问题主要是编码转换引起的“吃ASCII字符”(一字节)的现象，如果合理拼接，可让吃掉一字节后的剩余内容重新拼接成一个单引号’。下面来分析MySQL的字符集转换过程。MySQL收到请求时将请求数据从character_set_client转换为character_set_connection。进行内部操作前将请求数据从character_set_connection转换为内部操作字符集，其确定方法如下:<br>1）使用每个数据字段的CHARACTER SET设定值。<br>2)若上述值不存在，则使用对应数据表的DEFAULT CHARACTER SET设定值(MySQL扩展，非SQL标准)。<br>3)）若上述值不存在，则使用对应数据库的DEFAULT CHARACTER SET设定值。<br>4 ）若上述值不存在，则使用character_set_server设定值。</p>
+<p>最终将操作结果从内部操作字符集转换为character_set_results。</p>
+<p>宽字节注入发生的原因就是PHP发送请求到MySQL时字符集使用character_set_client设置值进行了一次编码，如果编码为GB2312、GBK、GB18030、BIG5、Shift_JIS等双字节编码，就会存在宽字节注入漏洞。</p>
+<p>如果目标页面进行了GPC过滤，将’(单引号)进行了转换，那么尝试在user参数写入%df’%20or%201=1%20limit%201,1%23&amp;&amp;pass=user1pass，看其是否进行了转换。解决宽字节漏洞的最好方式就是统一编码标准: Web页面及数据库均使用UTF-8进行编码。</p>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://example.com">FiveSeven</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://example.com/2021/03/29/sql%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/">http://example.com/2021/03/29/sql%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://example.com/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/">漏洞原理</a></span></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="../%E5%95%86%E5%93%81%E7%BC%96%E5%8F%B7%E7%AF%A1%E6%94%B9%E6%BC%8F%E6%B4%9E/"><span class="paginator-prev__text">商品编号篡改漏洞（逻辑漏洞）</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">
+          SQL注入的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BB%E6%89%BE%E6%B3%A8%E5%85%A5%E7%82%B9%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA"><span class="toc-number">1.1.</span> <span class="toc-text">
+          寻找注入点页面显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B2%E6%B3%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">
+          盲注流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%98%B2%E6%8A%A4%E6%89%8B%E6%AE%B5"><span class="toc-number">1.3.</span> <span class="toc-text">
+          常见防护手段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E7%BB%95%E8%BF%87"><span class="toc-number">1.4.</span> <span class="toc-text">
+          参数类型检测绕过</span></a></li></ol></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/2.jpg" alt="avatar"></div><p class="sidebar-ov-author__text">I can fly</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/fruitmememem/" target="_blank" rel="noopener" data-popover="Github" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span></a><a class="sidebar-ov-social-item" href="974256658" target="_blank" rel="noopener" data-popover="QQ" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-qq"></i></span></a></div><div class="sidebar-ov-feed"></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">13</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">3</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">3</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="../../../../images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2021</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>FiveSeven</span></div><div><span>由 <a href="../../../../http:/hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.0</span><span class="footer__devider">|</span><span>主题 - <a href="../../../../https:/github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div><div>托管于 <a href="https://github.com/FiveSeven-han/FiveSeven-han.github.io/tree/hexo" rel="noopener" target="_blank">FiveSeven-han</a></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/ribbon.js@latest/dist/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script><script src="https://cdn.jsdelivr.net/npm/pjax@latest/pjax.min.js"></script><script>window.addEventListener('DOMContentLoaded', function () {
+  var pjax = new Pjax({"selectors":["head title","#main",".pjax-reload"],"history":true,"scrollTo":false,"scrollRestoration":false,"cacheBust":false,"debug":false,"currentUrlFullReload":false,"timeout":0});
+  // 加载进度条的计时器
+  var loadingTimer = null;
+
+  // 重置页面 Y 方向上的滚动偏移量
+  document.addEventListener('pjax:send', function () {
+    $('.header-nav-menu').removeClass('show');
+    if (CONFIG.pjax && CONFIG.pjax.avoidBanner) {
+      $('html').velocity('scroll', {
+        duration: 500,
+        offset: $('#header').height(),
+        easing: 'easeInOutCubic'
+      });
+    }
+
+    var loadingBarWidth = 20;
+    var MAX_LOADING_WIDTH = 95;
+
+    $('.loading-bar').addClass('loading');
+    $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    clearInterval(loadingTimer);
+    loadingTimer = setInterval(function () {
+      loadingBarWidth += 3;
+      if (loadingBarWidth > MAX_LOADING_WIDTH) {
+        loadingBarWidth = MAX_LOADING_WIDTH;
+      }
+      $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    }, 500);
+  }, false);
+
+  window.addEventListener('pjax:complete', function () {
+    clearInterval(loadingTimer);
+    $('.loading-bar__progress').css('width', '100%');
+    $('.loading-bar').removeClass('loading');
+    setTimeout(function () {
+      $('.loading-bar__progress').css('width', '0');
+    }, 400);
+    $('link[rel=prefetch], script[data-pjax-rm]').each(function () {
+      $(this).remove();
+    });
+    $('script[data-pjax], #pjax-reload script').each(function () {
+      $(this).parent().append($(this).remove());
+    });
+
+    if (Stun.utils.pjaxReloadBoot) {
+      Stun.utils.pjaxReloadBoot();
+    }
+    if (Stun.utils.pjaxReloadScroll) {
+      Stun.utils.pjaxReloadScroll();
+    }
+    if (Stun.utils.pjaxReloadSidebar) {
+      Stun.utils.pjaxReloadSidebar();
+    }
+    if (false) {
+      if (Stun.utils.pjaxReloadHeader) {
+        Stun.utils.pjaxReloadHeader();
+      }
+      if (Stun.utils.pjaxReloadScrollIcon) {
+        Stun.utils.pjaxReloadScrollIcon();
+      }
+      if (Stun.utils.pjaxReloadLocalSearch) {
+        Stun.utils.pjaxReloadLocalSearch();
+      }
+    }
+  }, false);
+}, false);</script><div id="pjax-reload"><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script></div><script src="../../../../js/utils.js?v=2.6.2"></script><script src="../../../../js/stun-boot.js?v=2.6.2"></script><script src="../../../../js/scroll.js?v=2.6.2"></script><script src="../../../../js/header.js?v=2.6.2"></script><script src="../../../../js/sidebar.js?v=2.6.2"></script></body></html>
