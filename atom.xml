@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-30T08:44:48.203Z</updated>
+  <updated>2021-03-30T09:15:09.885Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>越权访问</title>
+    <link href="http://example.com/2021/03/30/%E8%B6%8A%E6%9D%83%E8%AE%BF%E9%97%AE/"/>
+    <id>http://example.com/2021/03/30/%E8%B6%8A%E6%9D%83%E8%AE%BF%E9%97%AE/</id>
+    <published>2021-03-30T08:59:41.005Z</published>
+    <updated>2021-03-30T09:15:09.885Z</updated>
+    
+    <content type="html"><![CDATA[<p>越权一般分为水平越权和垂直越权，水平越权是指相同权限的不同用户可以互相访问；垂直越权是指使用权限低的用户可以访问权限较高的用户。</p>        <h2 id="越权漏洞">          <a href="#越权漏洞" class="heading-link"><i class="fas fa-link"></i></a><a href="#越权漏洞" class="headerlink" title="越权漏洞"></a>越权漏洞</h2>              <h3 id="水平越权">          <a href="#水平越权" class="heading-link"><i class="fas fa-link"></i></a><a href="#水平越权" class="headerlink" title="水平越权"></a>水平越权</h3>      <p>水平越权测试方法主要是看能否通过A用户的操作影响B用户。攻击者请求操作（增、删、查、改）某条数据时，Web    应用程序没有判断该数据的所属人，或者在判断数据所属人时直接从用户提交的表单参数中获取（如用户ID），导致攻击者可以自行修改参数（用户ID），操作不属于自己的数据。</p><p>例：</p><p>某高校教务系统存在平行越权漏洞。通过测试发现，学号有规律可循，学号后4位是连续的数字，普通用户登录系统后可越权查看其他学生的学籍信息、课程成绩等敏感信息。</p><p>步骤一：以“高某某”学号为12xxxx0031为例，登录教务系统，并查看该账号的学籍信息。查看学籍信息链接为   http：//xxx/search.do？m=xsx&amp;xh=12Sxxx0031。</p><p>步骤二：访问学号为 12Sxxx0032 的学生的学籍信息，链接为 http：//xxx/search.do？ m=xsx&amp;xh=12Sxxx0031。</p><p>步骤三：访问学号为 12Sxxx0033 的学生的学籍信息，链接为 http：//xxx/search.do？ m=xsx&amp;xh=12Sxxx0033。</p>        <h3 id="垂直越权">          <a href="#垂直越权" class="heading-link"><i class="fas fa-link"></i></a><a href="#垂直越权" class="headerlink" title="垂直越权"></a>垂直越权</h3>      <p>垂直越权测试方法的基本思路是低权限用户越权高权限用户的功能，比如普通用户可使用管理员功能。服务器为鉴别客户端浏览器会话及身份信息，会将用户身份信息存储在 Cookie中， 并发送至客户端存储。攻击者通过尝试修改Cookie中的身份标识为管理员，欺骗服务器分配管理员权限，达到垂直越权的目的。</p><p>例：</p><p>某办公系统存在纵向越权漏洞，通过修改Cookie可直接提升普通用户权限为系统权限。</p><p>步骤一：使用普通权限账号a02登录办公系统，成功登录后访问链接http：//xxx/aaa/bbb/editUser.asp？iD=2，尝试修改权限。由于普通用户无法访问修改权限模块，系统会跳转到NoPower页面提示用户无操作权限。</p><p>步骤二：使用Burp Suite修改Cookie中的Tname参数为admin，欺骗服务器该请求为系统管理员发出的，成功提升账号a02为系统管理员权限。</p><p>步骤三：再次访问权限修改modifyuser页面http：//xxx/aaa/bbb/editUser.asp？iD=2，可访问成功。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;越权一般分为水平越权和垂直越权，水平越权是指相同权限的不同用户可以互相访问；垂直越权是指使用权限低的用户可以访问权限较高的用户。&lt;/p&gt;
+
+        &lt;h2 id=&quot;越权漏洞&quot;&gt;
+          &lt;a href=&quot;#越权漏洞&quot; class=&quot;heading-lin</summary>
+      
+    
+    
+    
+    <category term="其他" scheme="http://example.com/categories/%E5%85%B6%E4%BB%96/"/>
+    
+    
+    <category term="其他" scheme="http://example.com/tags/%E5%85%B6%E4%BB%96/"/>
+    
+  </entry>
   
   <entry>
     <title>谷歌语法</title>
